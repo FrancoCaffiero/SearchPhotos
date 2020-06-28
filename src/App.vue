@@ -1,19 +1,36 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <SearchPhotos v-on:searchPhotos="getPhotosByKeywords" />
+    <Actions />
+    <ShowPhotos v-bind:photos="photos" />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import SearchPhotos from "./components/SearchPhotos.vue";
+import ShowPhotos from "./components/ShowPhotos.vue";
+import Actions from "./components/Actions.vue";
+import axios from "axios";
+import { mapActions } from "vuex";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    SearchPhotos,
+    ShowPhotos,
+    Actions,
+  },
+  data() {
+    return { photos: [] };
+  },
+  methods: {
+    ...mapActions(["fetchPhotosFilteredByKeywords"]),
+
+    getPhotosByKeywords(keywords) {
+      this.fetchPhotosFilteredByKeywords(keywords);
+    },
+  },
+};
 </script>
 
 <style>
