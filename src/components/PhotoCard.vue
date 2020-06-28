@@ -27,7 +27,7 @@ export default {
   props: ["photo"],
   methods: {
     selectPhoto(photo) {
-      this.$emit("sselectPhoto", photo);
+      this.$emit("selectPhoto", photo);
     },
   },
 };

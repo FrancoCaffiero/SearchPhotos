@@ -20,11 +20,7 @@ const actions = {
 
     const url = base + "?" + page + and + per_page + and + query + and + client;
 
-    console.log(url);
-
     const response = await axios.get(url);
-
-    console.log(response.data);
 
     commit("setPhotos", response.data.results);
   },

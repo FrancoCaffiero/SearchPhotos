@@ -1,5 +1,8 @@
 <template>
-  <div class="flex flex-wrap bg-blue-200 px-10">
+  <div
+    v-show="getSelectedPhotos.length > 0"
+    class="flex flex-wrap bg-blue-200 px-10"
+  >
     <div class="flex w-full bg-gray-200 border rounded m-4">
       <div class="flex flex-col w-full">
         <p class="text-sm mb-2 text-gray-600 m-2">
@@ -18,6 +21,13 @@
           <div class="m-2">
             <button
               class="bg-blue-300 hover:bg-blue-500 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
+              v-clipboard="
+                () => {
+                  return getSelectedPhotos.map((photo) => {
+                    return photo.urls.full;
+                  });
+                }
+              "
             >
               <svg
                 class="fill-current w-4 h-4 mr-2"
@@ -34,6 +44,7 @@
           <div class="m-2">
             <button
               class="bg-blue-300 hover:bg-blue-500 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center"
+              v-on:click="downloadPhotos(getSelectedPhotos)"
             >
               <svg
                 class="fill-current w-4 h-4 mr-2"
@@ -53,14 +64,45 @@
 
 <script>
 import { mapGetters } from "vuex";
+import axios from "axios";
 
 export default {
   name: "Actions",
   components: {},
   props: "",
   computed: mapGetters(["getSelectedPhotos"]),
+  methods: {
+    fileDownload(response, filename) {
+      var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+      var fileLink = document.createElement("a");
+
+      fileLink.href = fileURL;
+      fileLink.setAttribute("download", `${filename}.png`);
+      document.body.appendChild(fileLink);
+
+      fileLink.click();
+    },
+    downloadPhoto(photo, filename) {
+      axios
+        .get(
+          photo.links.download_location +
+            "?client_id=M4h2fLH0CUHf2ifsx3jUJEgPuUff1nO4sgnVlkPJf84"
+        )
+        .then((response) =>
+          axios({
+            method: "get",
+            url: response.data.url,
+            responseType: "blob",
+          }).then((response) => this.fileDownload(response, filename))
+        );
+    },
+    downloadPhotos(photos) {
+      photos.map((photo) => {
+        this.downloadPhoto(photo, photo.id);
+      });
+    },
+  },
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped></style>

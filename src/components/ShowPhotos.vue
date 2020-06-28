@@ -4,7 +4,7 @@
       :photo="photo"
       v-for="photo in allPhotos"
       v-bind:key="photo.id"
-      v-on:sselectPhoto="selectPhoto"
+      v-on:selectPhoto="selectPhoto"
     />
   </div>
 </template>
@@ -30,5 +30,4 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped></style>
